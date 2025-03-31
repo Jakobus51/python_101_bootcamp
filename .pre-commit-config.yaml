@@ -1,0 +1,51 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+    -   id: trailing-whitespace # Removes trailing whitespaces
+    -   id: end-of-file-fixer # Makes sure files end in a newline and only a newline
+    -   id: check-yaml # Loads all yaml files to verify syntax
+    -   id: check-added-large-files # Prevents giant files from being committed (default=500kB)
+    -   id: debug-statements # Removes debug statements which should never be in production
+    -   id: requirements-txt-fixer # Sorts entries in requirements.txt and constraints.txt and removes incorrect entry for pkg-resources==0.0.0
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.9.4
+  hooks:
+    - id: ruff # Runs the ruff linter
+      name: Ruff - lint
+      args: [ --fix --line-length=120]
+    - id: ruff # Runs pydocstyle using the ruff linter(https://docs.astral.sh/ruff/rules/#pydocstyle-d)
+      name: Ruff - pydocstyle for docstrings
+      args: [ --select, D, --fix,
+       --ignore, D100, # Missing docstring in public module
+       --ignore, D205, # 1 blank line required between summary line and description
+       --ignore, D400, # First line should end with a period
+       --ignore, D401, # First line should be in imperative mood
+       --ignore, D415 ] # First line should end with a period
+    - id: ruff # Runs isort using the ruff linter (https://docs.astral.sh/ruff/rules/#isort-i)
+      name: Ruff - sort imports
+      args: [--select, I, --fix]
+    - id: ruff-format # Runs the ruff formatter
+      name: Ruff - format
+
+
+#Static type checker
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.11.0
+  hooks:
+  -   id: mypy
+      args:
+        - --ignore-missing-imports  # Ignore missing imports: useful for third-party libraries and inter-module imports
+        - --disable-error-code  # Disable the error code, which is useful for ignoring specific errors
+        - no-any-unimported  # Disables the error code no-any-unimported
+        - --explicit-package-bases  # Explicit package bases: useful for avoiding ambiguous type errors
+      exclude: ^((tests)|(tooling)|(docs)|(notebooks)|(^.*notebook.py))$
+      additional_dependencies:
+        - "types-PyYAML"
+
+# Notebook remove results
+- repo: https://github.com/kynan/nbstripout
+  rev: 0.5.0
+  hooks:
+    - id: nbstripout
