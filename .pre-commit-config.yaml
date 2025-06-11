@@ -14,12 +14,14 @@ repos:
   hooks:
     - id: ruff # Runs the ruff linter
       name: Ruff - lint
-      args: [ --fix --line-length=120]
+      args: [ --fix, --line-length=120]
     - id: ruff # Runs pydocstyle using the ruff linter(https://docs.astral.sh/ruff/rules/#pydocstyle-d)
       name: Ruff - pydocstyle for docstrings
       args: [ --select, D, --fix,
        --ignore, D100, # Missing docstring in public module
        --ignore, D205, # 1 blank line required between summary line and description
+       --ignore, D203, # 1 blank line required before class docstring, we use D211 instead
+       --ignore, D212, # Multi-line docstring summary should start at the first line, we use D213 instead
        --ignore, D400, # First line should end with a period
        --ignore, D401, # First line should be in imperative mood
        --ignore, D415 ] # First line should end with a period
